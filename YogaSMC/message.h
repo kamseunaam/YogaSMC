@@ -87,7 +87,8 @@ enum
     kSMC_YogaEvent          = iokit_vendor_specific_msg(501),   // set Yoga mode (data is UInt32*)
     kSMC_FnlockEvent        = iokit_vendor_specific_msg(502),   // notify Fnlock event
     kSMC_getConservation    = iokit_vendor_specific_msg(503),   // get conservation mode (data is bool*)
-    kSMC_setConservation    = iokit_vendor_specific_msg(504)    // set conservation mode (data is bool*)
+    kSMC_setConservation    = iokit_vendor_specific_msg(504),   // set conservation mode (data is bool*)
+    kSMC_setKeyboardBacklight = iokit_vendor_specific_msg(505)  // set keyboard backlight level 0..2 (data is UInt32*)
 };
 
 // from VoodooPS2

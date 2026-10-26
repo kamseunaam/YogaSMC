@@ -37,6 +37,11 @@ static constexpr const char *KeyIndexes = "0123456789ABCDEF";
 
 static constexpr SMC_KEY KeyBDVT = SMC_MAKE_IDENTIFIER('B','D','V','T');
 static constexpr SMC_KEY KeyCH0B = SMC_MAKE_IDENTIFIER('C','H','0','B');
+
+// Keyboard backlight keys used by the native macOS slider (see AsusSMC)
+static constexpr SMC_KEY KeyLKSB = SMC_MAKE_IDENTIFIER('L','K','S','B'); // Keyboard backlight brightness
+static constexpr SMC_KEY KeyLKSS = SMC_MAKE_IDENTIFIER('L','K','S','S');
+static constexpr SMC_KEY KeyMSLD = SMC_MAKE_IDENTIFIER('M','S','L','D');
 static constexpr SMC_KEY KeyTA0P(size_t i) { return SMC_MAKE_IDENTIFIER('T','A',KeyIndexes[i],'P');};
 static constexpr SMC_KEY KeyTB0T(size_t i) { return SMC_MAKE_IDENTIFIER('T','B',KeyIndexes[i],'T'); }
 static constexpr SMC_KEY KeyTCGC = SMC_MAKE_IDENTIFIER('T','C','G','C');
@@ -131,5 +136,16 @@ public:
 
 class BDVT : public messageKey { using messageKey::messageKey; protected: SMC_RESULT writeAccess() override; SMC_RESULT update(const SMC_DATA *src) override;};
 class CH0B : public VirtualSMCValue { protected: SMC_RESULT writeAccess() override; SMC_RESULT update(const SMC_DATA *src) override;};
+
+/**
+ *  Two byte payload used by the LKSB / LKSS keys (layout copied from AsusSMC).
+ *  macOS writes a 12 bit brightness (0x0 - 0xFFB) into the top bits of the 2 bytes.
+ */
+struct KBLBData {
+    uint8_t val1 {0};
+    uint8_t val2 {1};
+};
+
+class LKSB : public messageKey { using messageKey::messageKey; protected: SMC_RESULT writeAccess() override; SMC_RESULT update(const SMC_DATA *src) override;};
 
 #endif /* KeyImplementations_hpp */

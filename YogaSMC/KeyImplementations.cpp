@@ -34,6 +34,26 @@ SMC_RESULT CH0B::update(const SMC_DATA *src) {
     return SmcSuccess;
 }
 
+SMC_RESULT LKSB::writeAccess() {
+    if (!drv)
+        return SmcNotWritable;
+    return SmcSuccess;
+}
+
+SMC_RESULT LKSB::update(const SMC_DATA *src) {
+    // brightness requested by macOS is 12 bit, range [0x0, 0xffb]
+    uint16_t tval = (src[0] << 4) | (src[1] >> 4);
+
+    // ThinkPad keyboard backlight only has 3 steps: 0 off, 1 low, 2 high
+    UInt32 level = (tval == 0) ? 0 : ((tval < 0x800) ? 1 : 2);
+
+    DBGLOG("vpckey", "LKSB update 0x%x -> level %d", tval, level);
+    drv->dispatchMessage(kSMC_setKeyboardBacklight, &level);
+
+    lilu_os_memcpy(data, src, size);
+    return SmcSuccess;
+}
+
 SMC_RESULT atomicSpKey::readAccess() {
     uint32_t value = atomic_load_explicit(currentSensor, memory_order_acquire);
     *reinterpret_cast<uint16_t *>(data) = VirtualSMCAPI::encodeSp(type, value);

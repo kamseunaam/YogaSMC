@@ -581,6 +581,11 @@ IOReturn ThinkVPC::message(UInt32 type, IOService *provider, void *argument) {
         case kSMC_setConservation:
             break;
 
+        case kSMC_setKeyboardBacklight:
+            if (argument)
+                setBacklight(*(reinterpret_cast<UInt32 *>(argument)));
+            break;
+
         case kIOACPIMessageDeviceNotification:
             if (argument && *(reinterpret_cast<UInt32 *>(argument)) == kIOACPIMessageReserved) {
                 updateVPC();
